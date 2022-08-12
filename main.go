@@ -9,7 +9,26 @@ import (
 	"strings"
 )
 
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
+}
+
 func path_trawl(dir string) []string {
+	var blacklist_file_types = []string{
+		".json",
+		".yaml",
+		".gitattributes",
+		".gitmodules",
+		".gitignore",
+		".mod",
+		".sum",
+	}
+
 	all_paths := make([]string, 1000) // slice of max length 1000
 
 	err := filepath.Walk(dir,
@@ -20,6 +39,10 @@ func path_trawl(dir string) []string {
 
 				for _, elem := range strings.Split(path, "\n") {
 					//TODO: skip dot files
+					if contains(blacklist_file_types, filepath.Ext(elem)) {
+						continue
+					}
+
 					all_paths = append(all_paths, elem)
 				}
 				return nil
@@ -71,8 +94,6 @@ func main() {
 		}
 	}
 
-	fmt.Println(count)
-	fmt.Println(file_count)
-	// fmt.Println("Found %s lines of code across %s files", count, file_count)
+	fmt.Println(fmt.Sprintf("Found %d lines of code across %d files", count, file_count))
 
 }
