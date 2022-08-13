@@ -27,9 +27,13 @@ func path_trawl(dir string) []string {
 		".gitignore",
 		".mod",
 		".sum",
-        ".md",
-        ".rst",
-        ".txt", //maybe - might want to include cmake files
+		".md",
+		".rst",
+		".txt", //maybe - might want to include cmake files
+		".png",
+		".jpg",
+		".gif",
+		".editorconfig",
 	}
 
 	all_paths := make([]string, 1000) // slice of max length 1000
@@ -44,15 +48,20 @@ func path_trawl(dir string) []string {
 					if contains(blacklist_file_types, filepath.Ext(elem)) {
 						continue
 					} else if strings.Contains(filepath.Dir(elem), ".") {
-                        continue
-                    } else {
-                        info, err := os.Stat(elem)
-                        if err != nil {log.Panic(err)}
+						continue
+					} else if filepath.Base(elem) == "LICENSE" {
+						continue
+					} else {
+						// skip directories, we only want files
+						info, err := os.Stat(elem)
+						if err != nil {
+							log.Panic(err)
+						}
 
-                        if info.IsDir() {
-                            continue
-                        }
-                    }
+						if info.IsDir() {
+							continue
+						}
+					}
 
 					all_paths = append(all_paths, elem)
 				}
@@ -92,7 +101,7 @@ func file_length(filepath string) int {
 
 func main() {
 	//PLACEHOLDER := "/users/ashisbitt/workspace/gh-stats"
-    PLACEHOLDER_2 := "/home/auri/Workspace/gh-stats"
+	PLACEHOLDER_2 := "/home/auri/Workspace/vim-royale"
 
 	dir := PLACEHOLDER_2
 	var count int = 0
@@ -101,7 +110,7 @@ func main() {
 	all_files := path_trawl(dir)
 
 	for _, file := range all_files {
-        fmt.Println(file)
+		fmt.Println(file)
 		count += file_length(file)
 		if count != 0 {
 			file_count++
