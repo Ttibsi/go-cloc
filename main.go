@@ -20,20 +20,20 @@ func contains(s []string, e string) bool {
 
 func path_trawl(dir string) []string {
 	var blacklist_file_types = []string{
-		".json",
-		".yaml",
-		".gitattributes",
-		".gitmodules",
-		".gitignore",
-		".mod",
-		".sum",
-		".md",
-		".rst",
-		".txt", //maybe - might want to include cmake files
-		".png",
-		".jpg",
-		".gif",
 		".editorconfig",
+		".gif",
+		".gitattributes",
+		".gitignore",
+		".gitmodules",
+		".jpg",
+		".json",
+		".md",
+		".mod",
+		".png",
+		".rst",
+		".sum",
+		".txt", //maybe - might want to include cmake files
+		".yaml",
 	}
 
 	all_paths := make([]string, 1000) // slice of max length 1000
