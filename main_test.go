@@ -1,6 +1,10 @@
 package main
 
-import "testing"
+import (
+	"log"
+	"os"
+	"testing"
+)
 
 func Test_Contains(t *testing.T) {
 	type Testdata struct {
@@ -28,13 +32,29 @@ func Test_path_trawl(t *testing.T) {
 		expected []string
 	}
 
-	var tests = []Testdata{}
+	pwd, err := os.Getwd()
+	if err != nil {
+		log.Default()
+	}
+
+	var tests = []Testdata{
+		{
+			(pwd + "/fixtures"),
+			[]string{
+				(pwd + "fixtures/__init__.py"),
+				(pwd + "fixtures/foo.py"),
+				(pwd + "fixtures/bar/__init__.py"),
+				(pwd + "fixtures/bar/baz.py"),
+			}},
+	}
 
 	for _, tst := range tests {
 		output := path_trawl(tst.inp)
 
-		if output != tst.expected {
-			t.Errorf("%t not equal to expected %t", output, tst.expected)
+		for _, entry := range output {
+			if contains(tst.expected, entry) {
+				t.Errorf("%q not equal to expected %v", entry, tst.expected)
+			}
 		}
 	}
 }

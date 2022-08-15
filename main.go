@@ -101,7 +101,7 @@ func file_length(filepath string) int {
 
 func main() {
 	//PLACEHOLDER := "/users/ashisbitt/workspace/gh-stats"
-	PLACEHOLDER_2 := "/home/auri/Workspace/vim-royale"
+	PLACEHOLDER_2 := "/users/ashisbitt/workspace/count-loc/fixtures"
 
 	dir := PLACEHOLDER_2
 	var count int = 0
