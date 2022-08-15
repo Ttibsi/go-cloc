@@ -58,3 +58,20 @@ func Test_path_trawl(t *testing.T) {
 		}
 	}
 }
+
+// func file_length(filepath string) int {
+func Test_file_length(t *testing.T) {
+	type Testdata struct {
+		inp      string
+		expected int
+	}
+
+	var tests = []Testdata{}
+
+	for _, tst := range tests {
+		output := file_length(tst.inp)
+		if output != tst.expected {
+			t.Errorf("%q not equal to expected %d", output, tst.expected)
+		}
+	}
+}
