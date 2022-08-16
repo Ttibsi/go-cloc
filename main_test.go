@@ -66,12 +66,22 @@ func Test_file_length(t *testing.T) {
 		expected int
 	}
 
-	var tests = []Testdata{}
+	pwd, err := os.Getwd()
+	if err != nil {
+		log.Default()
+	}
+
+	var tests = []Testdata{
+		{(pwd + "/fixtures/__init__.py"), 0},
+		{(pwd + "/fixtures/foo.py"), 3},
+		{(pwd + "/fixtures/bar/__init__.py"), 0},
+		{(pwd + "/fixtures/bar/baz.py"), 2},
+	}
 
 	for _, tst := range tests {
 		output := file_length(tst.inp)
 		if output != tst.expected {
-			t.Errorf("%q not equal to expected %d", output, tst.expected)
+			t.Errorf("%d not equal to expected %d", output, tst.expected)
 		}
 	}
 }
