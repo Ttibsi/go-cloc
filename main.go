@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/urfave/cli/v2"
 )
 
 func contains(s []string, e string) bool {
@@ -99,11 +101,7 @@ func file_length(filepath string) int {
 	return length
 }
 
-func main() {
-	//PLACEHOLDER := "/users/ashisbitt/workspace/gh-stats"
-	PLACEHOLDER_2 := "/users/ashisbitt/workspace/count-loc/fixtures"
-
-	dir := PLACEHOLDER_2
+func count_through_directory(dir string) (int, int) {
 	var count int = 0
 	var file_count int = 0
 
@@ -117,6 +115,29 @@ func main() {
 		}
 	}
 
-	fmt.Println(fmt.Sprintf("Found %d lines of code across %d files", count, file_count))
+	return count, file_count
+}
+
+func output_value(c int, fc int) {
+	fmt.Println(fmt.Sprintf("Found %d lines of code across %d files", c, fc))
+}
+
+func main() {
+	//PLACEHOLDER := "/users/ashisbitt/workspace/gh-stats"
+
+	app := &cli.App{
+		Name:  "count-loc",
+		Usage: "Count lines of code in a given directory",
+		Action: func(*cli.Context) error {
+			fmt.Println("Hello")
+			return nil
+		},
+	}
+
+	if err := app.Run(os.Args); err != nil {
+		log.Fatal(err)
+	}
+
+	//count, file_count := count_through_directory(PLACEHOLDER)
 
 }
