@@ -21,6 +21,7 @@ func contains(s []string, e string) bool {
 }
 
 func path_trawl(dir string) []string {
+	// TODO: flag to enable specific file types currently blacklisted
 	var blacklist_file_types = []string{
 		".DS_Store",
 		".editorconfig",
@@ -31,11 +32,12 @@ func path_trawl(dir string) []string {
 		".jpg",
 		".json",
 		".md",
-		".mod",
 		".png",
+		".pyc",
+		".pyi",
 		".rst",
-		".sum",
 		".txt", //maybe - might want to include cmake files
+		".xml",
 		".yaml",
 	}
 
@@ -120,6 +122,8 @@ func count_through_directory(dir string) (int, int) {
 }
 
 func output_value(c int, fc int) {
+	// TODO: handle output based on file type?
+	// Ex: " 12 lines across 2 go files, 16 lines across 6 python files"
 	fmt.Println(fmt.Sprintf("Found %d lines of code across %d files", c, fc))
 }
 
@@ -144,5 +148,4 @@ func main() {
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
 	}
-
 }
