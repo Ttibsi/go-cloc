@@ -22,6 +22,7 @@ func contains(s []string, e string) bool {
 
 func path_trawl(dir string) []string {
 	var blacklist_file_types = []string{
+		".DS_Store",
 		".editorconfig",
 		".gif",
 		".gitattributes",
@@ -108,9 +109,9 @@ func count_through_directory(dir string) (int, int) {
 	all_files := path_trawl(dir)
 
 	for _, file := range all_files {
-		fmt.Println(file)
 		count += file_length(file)
 		if count != 0 {
+			fmt.Println(file)
 			file_count++
 		}
 	}
@@ -123,13 +124,19 @@ func output_value(c int, fc int) {
 }
 
 func main() {
-	//PLACEHOLDER := "/users/ashisbitt/workspace/gh-stats"
-
 	app := &cli.App{
 		Name:  "count-loc",
 		Usage: "Count lines of code in a given directory",
-		Action: func(*cli.Context) error {
-			fmt.Println("Hello")
+		Action: func(cCtx *cli.Context) error {
+			path := cCtx.Args().Get(0)
+
+			if path == "" {
+				fmt.Println("Error: No filepath entered")
+			} else {
+				count, file_count := count_through_directory(cCtx.Args().Get(0))
+				output_value(count, file_count)
+			}
+
 			return nil
 		},
 	}
@@ -137,7 +144,5 @@ func main() {
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
 	}
-
-	//count, file_count := count_through_directory(PLACEHOLDER)
 
 }
