@@ -29,6 +29,7 @@ func Test_Contains(t *testing.T) {
 func Test_path_trawl(t *testing.T) {
 	type Testdata struct {
 		inp      string
+		inp2     flags
 		expected []string
 	}
 
@@ -40,16 +41,29 @@ func Test_path_trawl(t *testing.T) {
 	var tests = []Testdata{
 		{
 			(pwd + "/fixtures"),
+			flags{"", false, false},
 			[]string{
 				(pwd + "fixtures/__init__.py"),
 				(pwd + "fixtures/foo.py"),
 				(pwd + "fixtures/bar/__init__.py"),
 				(pwd + "fixtures/bar/baz.py"),
-			}},
+			},
+		},
+		{
+			(pwd + "/fixtures"),
+			flags{".txt", false, false},
+			[]string{
+				(pwd + "fixtures/__init__.py"),
+				(pwd + "fixtures/foo.py"),
+				(pwd + "fixtures/bar/__init__.py"),
+				(pwd + "fixtures/bar/baz.py"),
+				(pwd + "fixtures/bar/waz.txt"),
+			},
+		},
 	}
 
 	for _, tst := range tests {
-		output := path_trawl(tst.inp)
+		output := path_trawl(tst.inp, tst.inp2)
 
 		for _, entry := range output {
 			if contains(tst.expected, entry) {
@@ -59,7 +73,6 @@ func Test_path_trawl(t *testing.T) {
 	}
 }
 
-// func file_length(filepath string) int {
 func Test_file_length(t *testing.T) {
 	type Testdata struct {
 		inp      string

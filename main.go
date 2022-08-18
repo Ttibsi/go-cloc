@@ -20,8 +20,7 @@ func contains(s []string, e string) bool {
 	return false
 }
 
-func path_trawl(dir string) []string {
-	// TODO: flag to enable specific file types currently blacklisted
+func path_trawl(dir string, setFlags flags) []string {
 	var blacklist_file_types = []string{
 		".DS_Store",
 		".editorconfig",
@@ -50,11 +49,13 @@ func path_trawl(dir string) []string {
 			} else {
 
 				for _, elem := range strings.Split(path, "\n") {
-					if contains(blacklist_file_types, filepath.Ext(elem)) {
+					if !setFlags.enable_all && contains(blacklist_file_types, filepath.Ext(elem)) {
+						if setFlags.extension != filepath.Ext(elem) {
+							continue
+						}
+					} else if !setFlags.use_hidden_dirs && strings.Contains(filepath.Dir(elem), ".") {
 						continue
-					} else if strings.Contains(filepath.Dir(elem), ".") {
-						continue
-					} else if filepath.Base(elem) == "LICENSE" {
+					} else if !setFlags.enable_all && filepath.Base(elem) == "LICENSE" {
 						continue
 					} else {
 						// skip directories, we only want files
@@ -104,11 +105,11 @@ func file_length(filepath string) int {
 	return length
 }
 
-func count_through_directory(dir string) (int, int) {
+func count_through_directory(dir string, setFlags flags) (int, int) {
 	var count int = 0
 	var file_count int = 0
 
-	all_files := path_trawl(dir)
+	all_files := path_trawl(dir, setFlags)
 
 	for _, file := range all_files {
 		count += file_length(file)
@@ -127,8 +128,15 @@ func output_value(c int, fc int) {
 	fmt.Println(fmt.Sprintf("Found %d lines of code across %d files", c, fc))
 }
 
+type flags struct {
+	extension       string
+	enable_all      bool
+	use_hidden_dirs bool
+}
+
 func main() {
-	var extensions string
+	// TODO: -v/--version
+	var setFlags flags
 
 	app := &cli.App{
 		Name:  "count-loc",
@@ -138,7 +146,19 @@ func main() {
 				Name:        "enable-ext",
 				Value:       "",
 				Usage:       "Add file types currently blacklisted",
-				Destination: &extensions,
+				Destination: &setFlags.extension,
+			},
+			&cli.BoolFlag{
+				Name:        "enable-all",
+				Value:       false,
+				Usage:       "Enable searching all extensions blacklisted by default",
+				Destination: &setFlags.enable_all,
+			},
+			&cli.BoolFlag{
+				Name:        "use-hidden-dirs",
+				Value:       false,
+				Usage:       "Include searching through hidden directors, such as .git",
+				Destination: &setFlags.enable_all,
 			},
 		},
 		Action: func(cCtx *cli.Context) error {
@@ -150,10 +170,8 @@ func main() {
 				fmt.Println("Error: No filepath entered")
 			}
 
-			fmt.Println(extensions)
-			fmt.Println(path)
-			//count, file_count := count_through_directory(path)
-			//output_value(count, file_count)
+			count, file_count := count_through_directory(path, setFlags)
+			output_value(count, file_count)
 
 			return nil
 		},
