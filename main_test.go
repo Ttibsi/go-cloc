@@ -38,6 +38,7 @@ func Test_path_trawl(t *testing.T) {
 		log.Default()
 	}
 
+	// TODO: I'm not sure if these are all working right
 	var tests = []Testdata{
 		{
 			(pwd + "/fixtures"),
@@ -53,6 +54,30 @@ func Test_path_trawl(t *testing.T) {
 			(pwd + "/fixtures"),
 			flags{".txt", false, false},
 			[]string{
+				(pwd + "fixtures/__init__.py"),
+				(pwd + "fixtures/foo.py"),
+				(pwd + "fixtures/bar/__init__.py"),
+				(pwd + "fixtures/bar/baz.py"),
+				(pwd + "fixtures/bar/waz.txt"),
+			},
+		},
+		{
+			(pwd + "/fixtures"),
+			flags{"", true, false},
+			[]string{
+				(pwd + "fixtures/README.md"),
+				(pwd + "fixtures/__init__.py"),
+				(pwd + "fixtures/foo.py"),
+				(pwd + "fixtures/bar/__init__.py"),
+				(pwd + "fixtures/bar/baz.py"),
+				(pwd + "fixtures/bar/waz.txt"),
+			},
+		},
+		{
+			(pwd + "/fixtures"),
+			flags{"", false, true},
+			[]string{
+				(pwd + "fixtures/README.md"),
 				(pwd + "fixtures/__init__.py"),
 				(pwd + "fixtures/foo.py"),
 				(pwd + "fixtures/bar/__init__.py"),
