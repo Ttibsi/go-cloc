@@ -128,18 +128,32 @@ func output_value(c int, fc int) {
 }
 
 func main() {
+	var extensions string
+
 	app := &cli.App{
 		Name:  "count-loc",
 		Usage: "Count lines of code in a given directory",
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:        "enable-ext",
+				Value:       "",
+				Usage:       "Add file types currently blacklisted",
+				Destination: &extensions,
+			},
+		},
 		Action: func(cCtx *cli.Context) error {
-			path := cCtx.Args().Get(0)
-
-			if path == "" {
-				fmt.Println("Error: No filepath entered")
+			var path string
+			if cCtx.NArg() > 0 {
+				path = cCtx.Args().Get(0)
+				//break here
 			} else {
-				count, file_count := count_through_directory(cCtx.Args().Get(0))
-				output_value(count, file_count)
+				fmt.Println("Error: No filepath entered")
 			}
+
+			fmt.Println(extensions)
+			fmt.Println(path)
+			//count, file_count := count_through_directory(path)
+			//output_value(count, file_count)
 
 			return nil
 		},
