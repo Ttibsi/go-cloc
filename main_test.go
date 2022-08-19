@@ -42,7 +42,7 @@ func Test_path_trawl(t *testing.T) {
 	var tests = []Testdata{
 		{
 			(pwd + "/fixtures"),
-			flags{"", false, false},
+			flags{"", false, false, ""},
 			[]string{
 				(pwd + "fixtures/__init__.py"),
 				(pwd + "fixtures/foo.py"),
@@ -52,7 +52,7 @@ func Test_path_trawl(t *testing.T) {
 		},
 		{
 			(pwd + "/fixtures"),
-			flags{".txt", false, false},
+			flags{".txt", false, false, ""},
 			[]string{
 				(pwd + "fixtures/__init__.py"),
 				(pwd + "fixtures/foo.py"),
@@ -63,7 +63,7 @@ func Test_path_trawl(t *testing.T) {
 		},
 		{
 			(pwd + "/fixtures"),
-			flags{"", true, false},
+			flags{"", true, false, ""},
 			[]string{
 				(pwd + "fixtures/README.md"),
 				(pwd + "fixtures/__init__.py"),
@@ -75,13 +75,21 @@ func Test_path_trawl(t *testing.T) {
 		},
 		{
 			(pwd + "/fixtures"),
-			flags{"", false, true},
+			flags{"", false, true, ""},
 			[]string{
 				(pwd + "fixtures/README.md"),
 				(pwd + "fixtures/__init__.py"),
 				(pwd + "fixtures/foo.py"),
 				(pwd + "fixtures/bar/__init__.py"),
 				(pwd + "fixtures/bar/baz.py"),
+				(pwd + "fixtures/bar/waz.txt"),
+			},
+		},
+		{
+			(pwd + "/fixtures"),
+			flags{"", false, false, ".py"},
+			[]string{
+				(pwd + "fixtures/README.md"),
 				(pwd + "fixtures/bar/waz.txt"),
 			},
 		},
