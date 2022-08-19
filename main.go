@@ -40,6 +40,10 @@ func path_trawl(dir string, setFlags flags) []string {
 		".yaml",
 	}
 
+	if len(setFlags.new_blacklist_item) > 0 {
+		blacklist_file_types = append(blacklist_file_types, setFlags.new_blacklist_item)
+	}
+
 	all_paths := make([]string, 1000) // slice of max length 1000
 
 	err := filepath.Walk(dir,
@@ -129,9 +133,10 @@ func output_value(c int, fc int) {
 }
 
 type flags struct {
-	extension       string
-	enable_all      bool
-	use_hidden_dirs bool
+	extension          string
+	enable_all         bool
+	use_hidden_dirs    bool
+	new_blacklist_item string
 }
 
 func main() {
@@ -160,12 +165,17 @@ func main() {
 				Usage:       "Include searching through hidden directors, such as .git",
 				Destination: &setFlags.enable_all,
 			},
+			&cli.StringFlag{
+				Name:        "ignore-ext",
+				Value:       "",
+				Usage:       "Add filetype to list to ignore (ex: '.hpp')",
+				Destination: &setFlags.new_blacklist_item,
+			},
 		},
 		Action: func(cCtx *cli.Context) error {
 			var path string
 			if cCtx.NArg() > 0 {
 				path = cCtx.Args().Get(0)
-				//break here
 			} else {
 				fmt.Println("Error: No filepath entered")
 			}
