@@ -26,6 +26,19 @@ func Test_Contains(t *testing.T) {
 	}
 }
 
+// For making sure two string slices are equal
+func Equal(a, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i, v := range a {
+		if v != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
 func Test_path_trawl(t *testing.T) {
 	type Testdata struct {
 		inp      string
@@ -38,7 +51,6 @@ func Test_path_trawl(t *testing.T) {
 		log.Default()
 	}
 
-	// TODO: I'm not sure if these are all working right
 	var tests = []Testdata{
 		{
 			(pwd + "/fixtures"),
@@ -98,10 +110,8 @@ func Test_path_trawl(t *testing.T) {
 	for _, tst := range tests {
 		output := path_trawl(tst.inp, tst.inp2)
 
-		for _, entry := range output {
-			if contains(tst.expected, entry) {
-				t.Errorf("%q not equal to expected %v", entry, tst.expected)
-			}
+		if Equal(output, tst.expected) {
+			t.Errorf("%q not equal to expected %v", output, tst.expected)
 		}
 	}
 }
