@@ -26,9 +26,23 @@ func Test_Contains(t *testing.T) {
 	}
 }
 
+// For making sure two string slices are equal
+func Equal(a, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i, v := range a {
+		if v != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
 func Test_path_trawl(t *testing.T) {
 	type Testdata struct {
 		inp      string
+		inp2     flags
 		expected []string
 	}
 
@@ -40,26 +54,68 @@ func Test_path_trawl(t *testing.T) {
 	var tests = []Testdata{
 		{
 			(pwd + "/fixtures"),
+			flags{"", false, false, ""},
 			[]string{
 				(pwd + "fixtures/__init__.py"),
 				(pwd + "fixtures/foo.py"),
 				(pwd + "fixtures/bar/__init__.py"),
 				(pwd + "fixtures/bar/baz.py"),
-			}},
+			},
+		},
+		{
+			(pwd + "/fixtures"),
+			flags{".txt", false, false, ""},
+			[]string{
+				(pwd + "fixtures/__init__.py"),
+				(pwd + "fixtures/foo.py"),
+				(pwd + "fixtures/bar/__init__.py"),
+				(pwd + "fixtures/bar/baz.py"),
+				(pwd + "fixtures/bar/waz.txt"),
+			},
+		},
+		{
+			(pwd + "/fixtures"),
+			flags{"", true, false, ""},
+			[]string{
+				(pwd + "fixtures/README.md"),
+				(pwd + "fixtures/__init__.py"),
+				(pwd + "fixtures/foo.py"),
+				(pwd + "fixtures/bar/__init__.py"),
+				(pwd + "fixtures/bar/baz.py"),
+				(pwd + "fixtures/bar/waz.txt"),
+			},
+		},
+		{
+			(pwd + "/fixtures"),
+			flags{"", false, true, ""},
+			[]string{
+				(pwd + "fixtures/README.md"),
+				(pwd + "fixtures/__init__.py"),
+				(pwd + "fixtures/foo.py"),
+				(pwd + "fixtures/bar/__init__.py"),
+				(pwd + "fixtures/bar/baz.py"),
+				(pwd + "fixtures/bar/waz.txt"),
+			},
+		},
+		{
+			(pwd + "/fixtures"),
+			flags{"", false, false, ".py"},
+			[]string{
+				(pwd + "fixtures/README.md"),
+				(pwd + "fixtures/bar/waz.txt"),
+			},
+		},
 	}
 
 	for _, tst := range tests {
-		output := path_trawl(tst.inp)
+		output := path_trawl(tst.inp, tst.inp2)
 
-		for _, entry := range output {
-			if contains(tst.expected, entry) {
-				t.Errorf("%q not equal to expected %v", entry, tst.expected)
-			}
+		if Equal(output, tst.expected) {
+			t.Errorf("%q not equal to expected %v", output, tst.expected)
 		}
 	}
 }
 
-// func file_length(filepath string) int {
 func Test_file_length(t *testing.T) {
 	type Testdata struct {
 		inp      string
