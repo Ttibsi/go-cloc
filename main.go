@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 
@@ -139,22 +140,26 @@ type flags struct {
 	new_blacklist_item string
 }
 
-
 func main() {
-	// TODO: -v/--version
 	var setFlags flags
 
-    // TODO: Make this print the most recent git tag instead of a string
-    cli.VersionFlag = &cli.BoolFlag{
-        Name:    "version",
-        Aliases: []string{"v"},
-        Usage:   "print version string",
-    }
+	cli.VersionPrinter = func(cCtx *cli.Context) {
+		stdout, err := exec.Command("git", "tag").Output()
+
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+
+		val := strings.Split(string(stdout), "\n")
+		fmt.Println(val[0])
+		os.Exit(0) // If this is called with other values, make sure it only runs this
+	}
 
 	app := &cli.App{
-		Name:  "count-loc",
-		Usage: "Count lines of code in a given directory",
-        Version: "v0.1.0",
+		Name:    "count-loc",
+		Usage:   "Count lines of code in a given directory",
+		Version: "v0.1.0",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:        "enable-ext",

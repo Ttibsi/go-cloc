@@ -12,6 +12,9 @@ NAME:
 USAGE:
    count-loc [global options] command [command options] [arguments...]
 
+VERSION:
+   v0.1.0
+
 COMMANDS:
    help, h  Shows a list of commands or help for one command
 
@@ -19,7 +22,9 @@ GLOBAL OPTIONS:
    --enable-all        Enable searching all extensions blacklisted by default (default: false)
    --enable-ext value  Add file types currently blacklisted
    --help, -h          show help (default: false)
+   --ignore-ext value  Add filetype to list to ignore (ex: '.hpp')
    --use-hidden-dirs   Include searching through hidden directors, such as .git (default: false)
+   --version, -v       print the version (default: false)
 ```
 
 Note that this will _only_ work if you include flags before the given
@@ -27,8 +32,10 @@ directory. This is due to the cli framework this is using.
 
 ### To Install
 
-If you have `go` already, you can clone this repo and run `go install`.
+Pull the binary from the github releases page on the right of this repo and
+place it in a location on your PATH. For mac/linux based systems, I'd
+recommend `/usr/local/bin` using the below command:
 
-Otherwise, you can pull the binary from the github releases page on the right
-of this repo and place it in a location on your PATH. For mac/linux based
-systems, I'd recommend `/usr/local/bin`.
+```bash
+cp ~/Downloads/count-loc /usr/local/bin
+```
