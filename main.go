@@ -130,7 +130,7 @@ func count_through_directory(dir string, setFlags flags) (int, int) {
 func output_value(c int, fc int) {
 	// TODO: handle output based on file type?
 	// Ex: " 12 lines across 2 go files, 16 lines across 6 python files"
-	fmt.Println(fmt.Sprintf("Found %d lines of code across %d files", c, fc))
+	fmt.Printf("Found %d lines of code across %d files\n", c, fc)
 }
 
 type flags struct {
