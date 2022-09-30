@@ -36,6 +36,8 @@ func path_trawl(dir string, setFlags flags) []string {
 		".pyc",
 		".pyi",
 		".rst",
+		".swp",
+		".tmp",
 		".txt", //maybe - might want to include cmake files
 		".xml",
 		".yaml",
