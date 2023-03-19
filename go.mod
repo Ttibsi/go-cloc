@@ -1,4 +1,4 @@
-module github.com/ttibsi/count-loc
+module github.com/ttibsi/c-loc
 
 go 1.18
 
