@@ -1,7 +1,7 @@
 use std::collections::HashMap;
-use std::{fs, path::Path};
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+use std::{fs, path::Path};
 
 fn get_lines(inp_file: String) -> i32 {
     let file = File::open(inp_file).expect("Unable to open file");
@@ -36,8 +36,12 @@ fn check_for_files(dir: String) -> HashMap<String, i32> {
         };
         let entry_path = entry.path();
         //TODO: Ignore what's in .gitignore
-        if entry_path.starts_with("./.git") { continue; }
-        if entry_path.starts_with("./target") { continue; }
+        if entry_path.starts_with("./.git") {
+            continue;
+        }
+        if entry_path.starts_with("./target") {
+            continue;
+        }
 
         if entry_path.is_dir() {
             // Handle directory
@@ -51,9 +55,16 @@ fn check_for_files(dir: String) -> HashMap<String, i32> {
                 .to_string();
 
             if results.get(&ext) != None {
-                results.insert(ext.clone(), get_lines(entry_path.to_str().unwrap().to_string()) + results.get(&ext.clone()).unwrap().to_owned());
+                results.insert(
+                    ext.clone(),
+                    get_lines(entry_path.to_str().unwrap().to_string())
+                        + results.get(&ext.clone()).unwrap().to_owned(),
+                );
             } else {
-                results.insert(ext.clone(), get_lines(entry_path.to_str().unwrap().to_string()));
+                results.insert(
+                    ext.clone(),
+                    get_lines(entry_path.to_str().unwrap().to_string()),
+                );
             }
         } else {
             // Handle other types of entries, like symbolic links
@@ -76,16 +87,16 @@ pub fn scan(args: Vec<String>) -> HashMap<String, i32> {
 }
 
 pub fn print(res: HashMap<String, i32>) {
-    let mut output = String::new();
-    let len = 0;
+    // let mut output = String::new();
+    // let len = 0;
 
-    for (k, v) in res.iter() {
-        if len < k.len() {
-            len == k.len();
-        }
-    
-        output += k += " | " += v.to_string() += "\n";
-    };
+    // for (k, v) in res.iter() {
+    //     if len < k.len() {
+    //         len == k.len();
+    //     }
+    //
+    //     output += k += " | " += v.to_string() += "\n";
+    // }
 
     println!("{:#?}", res)
 }
