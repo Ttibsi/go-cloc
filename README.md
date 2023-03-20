@@ -1,4 +1,4 @@
-# Count-loc
+# C-loc
 
 A simple tool that counts the lines of code in the directory passed as an
 arguement in the CLI. To use, run `count-loc <directory>` in a terminal. This

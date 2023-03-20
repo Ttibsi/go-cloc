@@ -159,7 +159,7 @@ func main() {
 	}
 
 	app := &cli.App{
-		Name:    "count-loc",
+		Name:    "c-loc",
 		Usage:   "Count lines of code in a given directory",
 		Version: "v0.1.0",
 		Flags: []cli.Flag{
