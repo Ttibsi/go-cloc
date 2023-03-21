@@ -87,16 +87,25 @@ pub fn scan(args: Vec<String>) -> HashMap<String, i32> {
 }
 
 pub fn print(res: HashMap<String, i32>) {
-    // let mut output = String::new();
-    // let len = 0;
+    let mut output = String::new();
+    let mut len = 0;
 
-    // for (k, v) in res.iter() {
-    //     if len < k.len() {
-    //         len == k.len();
-    //     }
-    //
-    //     output += k += " | " += v.to_string() += "\n";
-    // }
+    for (k, v) in res.iter() {
+        if len < k.len() {
+            len = k.len();
+        }
 
-    println!("{:#?}", res)
+        output += "| ";
+        output += k;
+        output += " | ";
+        output += &v.to_string();
+        output += " |";
+        output += "\n"
+    }
+
+    println!("+{}+", "-".repeat(len + 7));
+    println!("{}", output);
+    println!("+{}+", "-".repeat(len + 7));
+
+    // println!("{:#?}", res)
 }
