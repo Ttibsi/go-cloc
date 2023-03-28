@@ -21,7 +21,9 @@ fn check_for_files(dir: &str) -> Result<HashMap<String, i32>, Box<dyn Error>> {
 
         if entry_path.is_dir() {
             // Handle directory
-            results.extend(check_for_files(entry_path.to_str().unwrap()));
+            if let Ok(map) = check_for_files(entry_path.to_str().unwrap()) {
+                results.extend(map.into_iter());
+            }
         } else if entry_path.is_file() {
             // Handle file
             let ext = Path::new(entry_path.to_str().unwrap())
@@ -34,14 +36,18 @@ fn check_for_files(dir: &str) -> Result<HashMap<String, i32>, Box<dyn Error>> {
                 results.insert(
                     ext.clone(),
                     (BufReader::new(File::open(entry_path)?).lines().count()
-                        + results.get(&ext.clone()).unwrap().to_owned())
-                    .try_into()
-                    .unwrap(),
+                        + results.get(&ext.clone()).unwrap().to_owned() as usize)
+                        .try_into()
+                        .unwrap(),
                 );
             } else {
                 results.insert(
                     ext.clone(),
-                    BufReader::new(File::open(entry_path)).lines().count(),
+                    BufReader::new(File::open(entry_path)?)
+                        .lines()
+                        .count()
+                        .try_into()
+                        .unwrap(),
                 );
             }
         } else {
@@ -57,7 +63,7 @@ pub fn scan(args: Vec<String>) -> HashMap<String, i32> {
     let mut results: HashMap<String, i32> = HashMap::new();
 
     for arg in args {
-        let ret = check_for_files(&arg);
+        let ret = check_for_files(&arg).unwrap();
         results.extend(ret);
     }
 
@@ -73,12 +79,12 @@ pub fn print(res: HashMap<String, i32>) {
             len = k.len();
         }
 
-        write!(&mut output, "| {} | {} |\n", k, v.to_string()).unwrap();
+        write!(&mut output, "| {0: <5} | {1: <5} |\n", k, v.to_string()).unwrap();
     }
 
-    println!("+{}+", "-".repeat(len + 7));
-    println!("{}", output);
-    println!("+{}+", "-".repeat(len + 7));
+    println!("+{}+", "-".repeat(len + 13));
+    print!("{}", output);
+    println!("+{}+", "-".repeat(len + 13));
 
     // println!("{:#?}", res)
 }
