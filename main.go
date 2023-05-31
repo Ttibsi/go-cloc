@@ -1,5 +1,7 @@
 package main
 
-import "github.com/Ttibsi/go-cloc/src"
+import "github.com/Ttibsi/go-cloc/cmd"
 
-func main() {}
+func main() {
+	cmd.Execute()
+}
