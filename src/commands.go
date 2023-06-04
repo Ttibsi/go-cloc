@@ -43,22 +43,22 @@ to quickly create a Cobra application.`,
 			flags.Version = true
 		}
 
-		excludedDir, err := cmd.Flags().GetString("exclude-dir")
+		excluded, err := cmd.Flags().GetStringSlice("exclude-dir")
 		if err != nil {
 			fmt.Println(err.Error())
 		}
 
-		if excludedDir != "" {
-			flags.ExcludeDir = excludedDir
+		if len(excluded) != 0 {
+			flags.ExcludeDir = excluded
 		}
 
-		excluded, err := cmd.Flags().GetString("exclude")
+		excluded_regex, err := cmd.Flags().GetStringSlice("exclude")
 		if err != nil {
 			fmt.Println(err.Error())
 		}
 
-		if excluded != "" {
-			flags.Exclude = excluded
+		if len(excluded_regex) != 0 {
+			flags.Exclude = excluded_regex
 		}
 
 		ignoreWhitespace, err := cmd.Flags().GetBool("ignore-whitespace")

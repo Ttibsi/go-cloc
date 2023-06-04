@@ -5,8 +5,8 @@ import (
 )
 
 type Flags struct {
-	ExcludeDir       string
-	Exclude          string
+	ExcludeDir       []string
+	Exclude          []string
 	IgnoreWhitespace bool
 	IgnoreComments   bool
 	NoRecurse        bool
@@ -27,8 +27,13 @@ func Setup() {
 	// rootCmd.AddCommand(gitRepoCmd)
 	// rootCmd.AddCommand(findCmd)
 
-	rootCmd.Flags().StringP("exclude-dir", "", "", "Directory to ignore when searching")
-	rootCmd.Flags().StringP("exclude", "", "", "Exclude all files that match the given regex")
+	var ExcludeDirValues []string
+	var ExcludeRegexValues []string
+
+	rootCmd.Flags().
+		StringSliceVarP(&ExcludeDirValues, "exclude-dir", "", []string{}, "Directory to ignore when searching")
+	rootCmd.Flags().
+		StringSliceVarP(&ExcludeRegexValues, "exclude", "", []string{}, "Exclude all files that match the given regex")
 	rootCmd.Flags().BoolP("ignore-whitespace", "i", false, "Ignore empty lines")
 	rootCmd.Flags().BoolP("ignore-comments", "", false, "Ignore comment lines")
 	rootCmd.Flags().
