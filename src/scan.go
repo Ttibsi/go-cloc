@@ -53,10 +53,9 @@ func StartLogic(f Flags) {
 		fmt.Println("Version: ")
 		os.Exit(0)
 	}
-
-	// build a list of all files to scan, ignoring excluded files/directories
-	// TODO No-recurse
-	// TODO find-lang
+	// TODO: git-dir
+	// TODO: No-recurse
+	// TODO: find-lang
 	var files []string
 	for _, dir := range f.Directory {
 		ret, err := getAllFilePaths(dir, f.ExcludeDir, f.Exclude)
