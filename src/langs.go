@@ -6,13 +6,17 @@ type t_langs map[string][]string
 // values: list of strings: single comment, block open, block close
 
 var LANGUAGES_COMMENTS t_langs = t_langs{
-	"c":   []string{"//", "/*", "*/"},
-	"cc":  []string{"//", "/*", "*/"},
-	"cpp": []string{"//", "/*", "*/"},
-	"h":   []string{"//", "/*", "*/"},
-	"hpp": []string{"//", "/*", "*/"},
-	"go":  []string{"//", "/*", "*/"},
-	"py":  []string{"#"},                              // python
-	"sh":  []string{"#", ": << 'COMMENT'", "COMMENT"}, //bash
-
+	".c":    []string{"//", "/*", "*/"},
+	".cc":   []string{"//", "/*", "*/"},
+	".cpp":  []string{"//", "/*", "*/"},
+	".h":    []string{"//", "/*", "*/"},
+	".hpp":  []string{"//", "/*", "*/"},
+	".go":   []string{"//", "/*", "*/"},
+	".md":   []string{"", "<!--", "-->"},
+	".mod":  []string{"//", "/*", "*/"},
+	".py":   []string{"#"},                              // python
+	".sh":   []string{"#", ": << 'COMMENT'", "COMMENT"}, //bash
+	".sum":  []string{"//", "/*", "*/"},
+	".yaml": []string{"#"},
+	".yml":  []string{"#"},
 }

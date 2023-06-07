@@ -5,7 +5,11 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 func getAllFilePaths(
@@ -33,7 +37,9 @@ func getAllFilePaths(
 			}
 		}
 
-		ret = append(ret, path)
+		if !d.IsDir() {
+			ret = append(ret, path)
+		}
 
 		return nil
 	}
@@ -46,7 +52,115 @@ func getAllFilePaths(
 	return ret, nil
 }
 
-func printFormatter(pages []page) string { return "" }
+func printFormatter(pages []page) string {
+	// {"langname": []int{files, lines, comments, blanks}}
+	out := make(map[string][]int)
+	var totalLines int
+	var totalComment int
+	var totalBlank int
+	var totalCode int
+
+	for _, page := range pages {
+		if exist, ok := out[page.lang]; ok {
+			currFileCount := exist[0]
+			for i, newVal := range []int{currFileCount + 1, page.lines, page.commentLines, page.blanks} {
+				exist[i] += newVal
+			}
+		} else {
+			out[page.lang] = []int{0, page.lines, page.commentLines, page.blanks}
+		}
+	}
+
+	var builder strings.Builder
+	// builder.WriteString(strings.Repeat("=", term_width))
+	// builder.WriteString("\n")
+	builder.WriteString("\t" + strconv.Itoa(len(pages)) + " files scanned\n")
+	// TODO: Print time of exexcution
+	builder.WriteString("\n") //empty line in output
+	builder.WriteString("| Language | Files | Lines | Comments | Blank lines | Code lines |")
+	builder.WriteString("\n") //empty line in output
+	builder.WriteString("+----------+-------+-------+----------+-------------+------------+")
+	builder.WriteString("\n") //empty line in output
+
+	for k, v := range out {
+		wordlen := len(k)
+		codeLines := v[1] - (v[2] + v[3])
+		langName := cases.Title(language.Und, cases.NoLower).String(k)
+
+		totalLines += v[1]
+		totalComment += v[2]
+		totalBlank += v[3]
+		totalCode += codeLines
+
+		builder.WriteString("| " + langName + strings.Repeat(" ", len("language")-wordlen) + " ")
+		builder.WriteString(
+			"| " + strings.Repeat(
+				" ",
+				(len("files")-len(strconv.Itoa(v[0]))),
+			) + strconv.Itoa(
+				v[0],
+			) + " ",
+		)
+		builder.WriteString(
+			"| " + strings.Repeat(
+				" ",
+				(len("lines")-len(strconv.Itoa(v[1]))),
+			) + strconv.Itoa(
+				v[1],
+			) + " ",
+		)
+		builder.WriteString(
+			"| " + strings.Repeat(
+				" ",
+				(len("comments")-len(strconv.Itoa(v[2]))),
+			) + strconv.Itoa(
+				v[2],
+			) + " ",
+		)
+		builder.WriteString(
+			"| " + strings.Repeat(
+				" ",
+				(len("blank lines")-len(strconv.Itoa(v[3]))),
+			) + strconv.Itoa(
+				v[3],
+			) + " ",
+		)
+		builder.WriteString(
+			"| " + strings.Repeat(
+				" ",
+				(len("code lines")-len(strconv.Itoa(codeLines))),
+			) + strconv.Itoa(
+				codeLines,
+			) + " ",
+		)
+		builder.WriteString("|\n") //empty line in output
+	}
+
+	builder.WriteString("+----------+-------+-------+----------+-------------+------------+")
+	builder.WriteString("\n") //empty line in output
+
+	builder.WriteString(
+		"|   Total  | " +
+			strings.Repeat(" ", len("files")-len(strconv.Itoa(len(pages)))) +
+			strconv.Itoa(len(pages)) +
+			" | " +
+			strings.Repeat(" ", len("lines")-len(strconv.Itoa(totalLines))) +
+			strconv.Itoa(totalLines) +
+			" | " +
+			strings.Repeat(" ", len("comments")-len(strconv.Itoa(totalComment))) +
+			strconv.Itoa(totalComment) +
+			" | " +
+			strings.Repeat(" ", len("blank lines")-len(strconv.Itoa(totalBlank))) +
+			strconv.Itoa(totalBlank) +
+			" | " +
+			strings.Repeat(" ", len("code lines")-len(strconv.Itoa(totalCode))) +
+			strconv.Itoa(totalCode) +
+			" | ")
+	builder.WriteString("\n") //empty line in output
+	builder.WriteString("+----------+-------+-------+----------+-------------+------------+")
+
+	return builder.String()
+}
 
 func StartLogic(f Flags) {
 	if f.Version == true {
@@ -65,6 +179,8 @@ func StartLogic(f Flags) {
 		}
 		files = append(files, ret...)
 	}
+
+	// for _, v := range files { fmt.Println(v) }
 
 	var pages []page
 	for _, file := range files {
