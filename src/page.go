@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"golang.org/x/exp/slices"
 )
 
 type page struct {
@@ -50,7 +52,9 @@ func checkLang(file string) string {
 }
 
 func getLength(file string, lang string) ([]int, error) {
-	if _, ok := LANGUAGES_COMMENTS[lang]; !ok {
+	if slices.Contains(BLACKLIST, lang) {
+		return []int{0, 0, 0}, errors.New("Language blacklisted: " + lang)
+	} else if _, ok := LANGUAGES_COMMENTS[lang]; !ok {
 		return []int{}, errors.New("Language not in list: " + lang)
 	}
 

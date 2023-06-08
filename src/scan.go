@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 
+	"golang.org/x/exp/slices"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
@@ -67,13 +68,14 @@ func printFormatter(pages []page) string {
 				exist[i] += newVal
 			}
 		} else {
-			out[page.lang] = []int{0, page.lines, page.commentLines, page.blanks}
+			if slices.Contains(BLACKLIST, page.lang) {
+				continue
+			}
+			out[page.lang] = []int{1, page.lines, page.commentLines, page.blanks}
 		}
 	}
 
 	var builder strings.Builder
-	// builder.WriteString(strings.Repeat("=", term_width))
-	// builder.WriteString("\n")
 	builder.WriteString("\t" + strconv.Itoa(len(pages)) + " files scanned\n")
 	// TODO: Print time of exexcution
 	builder.WriteString("\n") //empty line in output
@@ -81,6 +83,7 @@ func printFormatter(pages []page) string {
 	builder.WriteString("\n") //empty line in output
 	builder.WriteString("+----------+-------+-------+----------+-------------+------------+")
 	builder.WriteString("\n") //empty line in output
+	// TODO: Rework getting file names/types to print
 
 	for k, v := range out {
 		wordlen := len(k)
@@ -179,8 +182,6 @@ func StartLogic(f Flags) {
 		}
 		files = append(files, ret...)
 	}
-
-	// for _, v := range files { fmt.Println(v) }
 
 	var pages []page
 	for _, file := range files {

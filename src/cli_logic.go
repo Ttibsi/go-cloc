@@ -5,15 +5,15 @@ import (
 )
 
 type Flags struct {
+	Directory        []string
 	ExcludeDir       []string
 	Exclude          []string
+	FindLang         string
+	GitOnly          bool
 	IgnoreWhitespace bool
 	IgnoreComments   bool
 	NoRecurse        bool
 	Version          bool
-	FindLang         string
-	GitOnly          bool
-	Directory        []string
 }
 
 func Execute() {
